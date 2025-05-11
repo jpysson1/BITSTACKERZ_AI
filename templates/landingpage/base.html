@@ -1,0 +1,83 @@
+<!DOCTYPE html>
+<html>
+<head>
+  <script src="https://unpkg.com/htmx.org@1.9.2"></script>
+  <title>Welcome to Our Platform</title>
+  <style>
+    body {
+      font-family: Arial, sans-serif;
+      margin: 0;
+      padding: 0;
+    }
+    
+    /* Navbar styles */
+    .navbar {
+      background-color: #333;
+      padding: 15px 20px;
+      display: flex;
+      justify-content: space-between;
+      align-items: center;
+    }
+    
+    .navbar .logo {
+      color: white;
+      font-size: 1.5rem;
+      font-weight: bold;
+      text-decoration: none;
+    }
+    
+    .navbar .nav-links a {
+      color: white;
+      margin-left: 20px;
+      text-decoration: none;
+    }
+    
+    .navbar .nav-links a:hover {
+      text-decoration: underline;
+    }
+    
+    /* Footer styles */
+    .footer {
+      background-color: #333;
+      color: white;
+      text-align: center;
+      padding: 20px;
+      margin-top: 40px;
+    }
+    
+    /* Content container */
+    .content {
+      min-height: calc(100vh - 150px);
+    }
+  </style>
+</head>
+<body>
+  <!-- Navbar -->
+  <div class="navbar">
+    <a href="/" class="logo">Our Platform</a>
+    <div class="nav-links">
+      <a href="/">Home</a>
+      <a href="/about" hx-get="/about/" hx-target="#main-content" hx-swap="innerHTML">About</a>
+      
+      {% if user.is_authenticated %}
+        <a href="/dashboard/">Dashboard</a>
+        <a href="/logout/">Logout</a>
+      {% else %}
+        <a href="/login/">Login</a>
+        <a href="/register/">Sign Up</a>
+      {% endif %}
+    </div>
+  </div>
+  
+  <!-- Main Content -->
+  <div class="content" id="main-content">
+    {% block content %}{% endblock %}
+  </div>
+  
+  <!-- Footer -->
+  <div class="footer">
+    <p>&copy; 2023 Our Platform. All rights reserved.</p>
+    <p>Contact: info@ourplatform.com</p>
+  </div>
+</body>
+</html> 

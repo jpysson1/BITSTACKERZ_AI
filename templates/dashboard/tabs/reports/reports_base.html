@@ -1,0 +1,13 @@
+<h2>Reports</h2>
+
+<!-- Inner tab navigation -->
+<nav>
+  <button hx-get="/reports/monthly/" hx-target="#report-content" hx-swap="innerHTML">Monthly</button>
+  <button hx-get="/reports/annual/" hx-target="#report-content" hx-swap="innerHTML">Annual</button>
+  <button hx-get="/reports/custom/" hx-target="#report-content" hx-swap="innerHTML">Custom</button>
+</nav>
+
+<!-- Placeholder for inner tab content -->
+<div id="report-content" style="margin-top: 20px;">
+  <p>Select a report tab above.</p>
+</div> 
