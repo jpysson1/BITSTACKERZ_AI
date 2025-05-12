@@ -1,0 +1,30 @@
+<div class="blog-detail">
+  <div class="blog-header">
+    <h2>{{ post.title }}</h2>
+    <div class="post-meta">
+      <span>By {{ post.author.username }}</span>
+      <span>{{ post.created_at|date:"F j, Y" }}</span>
+      {% if user.is_staff %}
+        <a hx-get="{% url 'create_blog' %}?edit_id={{ post.id }}" hx-target="#main-content" hx-swap="innerHTML" class="edit-link">Edit</a>
+      {% endif %}
+    </div>
+  </div>
+  
+  <div class="blog-content">
+    <div class="intro">
+      {{ post.intro|linebreaks }}
+    </div>
+    
+    <div class="main-content">
+      {{ post.mid|linebreaks }}
+    </div>
+    
+    <div class="conclusions">
+      {{ post.conclusions|linebreaks }}
+    </div>
+  </div>
+  
+  <div class="blog-footer">
+    <a hx-get="{% url 'blog' %}" hx-target="#main-content" hx-swap="innerHTML" class="back-link">← Back to Blog List</a>
+  </div>
+</div> 

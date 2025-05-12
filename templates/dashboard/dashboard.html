@@ -1,6 +1,10 @@
 {% extends "dashboard/base.html" %}
 
 {% block content %}
-  <h2>Welcome to the Dashboard</h2>
-  <p>Select an option from the sidebar.</p>
+  {% if content_template %}
+    {% include content_template %}
+  {% else %}
+    <h2>Welcome to the Dashboard</h2>
+    <p>Select an option from the sidebar.</p>
+  {% endif %}
 {% endblock %}

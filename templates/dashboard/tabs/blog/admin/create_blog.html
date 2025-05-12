@@ -1,0 +1,102 @@
+<div style="display: flex; gap: 20px;">
+    <!-- Blog Form Section -->
+    <div style="flex: 1;" id="blog-form-container">
+        <h2>{% if editing %}Edit{% else %}Create New{% endif %} Blog Post</h2>
+        
+        {% if messages %}
+            <div class="messages">
+                {% for message in messages %}
+                    <div class="message {% if message.tags %}{{ message.tags }}{% endif %}">
+                        {{ message }}
+                    </div>
+                {% endfor %}
+            </div>
+        {% endif %}
+        
+        <form method="post" action="{% url 'create_blog' %}" hx-post="{% url 'create_blog' %}" hx-target="#main-content" hx-swap="innerHTML">
+            {% csrf_token %}
+            
+            {% if post_id %}
+            <input type="hidden" name="post_id" value="{{ post_id }}">
+            {% endif %}
+            
+            {% if form.non_field_errors %}
+                <div class="error">
+                    {% for error in form.non_field_errors %}
+                        {{ error }}
+                    {% endfor %}
+                </div>
+            {% endif %}
+            
+            <div class="form-group">
+                <label for="{{ form.title.id_for_label }}">Title</label>
+                {{ form.title }}
+                {% if form.title.errors %}
+                    <div class="error">{{ form.title.errors }}</div>
+                {% endif %}
+            </div>
+            
+            <div class="form-group">
+                <label for="{{ form.intro.id_for_label }}">Introduction</label>
+                {{ form.intro }}
+                {% if form.intro.errors %}
+                    <div class="error">{{ form.intro.errors }}</div>
+                {% endif %}
+            </div>
+            
+            <div class="form-group">
+                <label for="{{ form.mid.id_for_label }}">Main Content</label>
+                {{ form.mid }}
+                {% if form.mid.errors %}
+                    <div class="error">{{ form.mid.errors }}</div>
+                {% endif %}
+            </div>
+            
+            <div class="form-group">
+                <label for="{{ form.conclusions.id_for_label }}">Conclusions</label>
+                {{ form.conclusions }}
+                {% if form.conclusions.errors %}
+                    <div class="error">{{ form.conclusions.errors }}</div>
+                {% endif %}
+            </div>
+            
+            <div class="form-group checkbox">
+                <label>
+                    {{ form.published }}
+                    Publish immediately
+                </label>
+            </div>
+            
+            <div class="form-actions">
+                <button type="submit" class="btn-primary">
+                    {% if editing %}Update{% else %}Create{% endif %} Blog Post
+                </button>
+                {% if editing %}
+                <a hx-get="{% url 'create_blog' %}" hx-target="#main-content" hx-swap="innerHTML" class="btn-secondary">Cancel Edit</a>
+                {% endif %}
+            </div>
+        </form>
+    </div>
+    
+    <!-- Blog List Section -->
+    <div style="flex: 1;">
+        <h2>Existing Blog Posts</h2>
+        
+        {% if blog_posts %}
+            <ul>
+                {% for post in blog_posts %}
+                    <li>
+                        <a hx-get="{% url 'get_blog_post' post.id %}" 
+                           hx-target="#blog-form-container" 
+                           hx-swap="innerHTML">
+                            {{ post.title }} 
+                            {% if post.published %}(Published){% else %}(Draft){% endif %}
+                        </a>
+                    </li>
+                {% endfor %}
+            </ul>
+        {% else %}
+            <p>No blog posts yet.</p>
+        {% endif %}
+    </div>
+</div>

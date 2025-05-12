@@ -10,16 +10,29 @@
     <!-- Sidebar -->
     <nav style="width:200px; border-right:1px solid #ccc; padding: 20px;">
       <ul style="list-style-type: none; padding-left: 0;">
-        <li style="margin-bottom: 10px;"><a hx-get="/blog/" hx-target="#main-content" hx-swap="innerHTML">Blog</a></li>
-        <li style="margin-bottom: 10px;"><a hx-get="/reports/" hx-target="#main-content" hx-swap="innerHTML">Reports</a></li>
-        <li style="margin-bottom: 10px;"><a hx-get="/settings/" hx-target="#main-content" hx-swap="innerHTML">Settings</a></li>
+        <li style="margin-bottom: 10px;"><a hx-get="{% url 'blog' %}" hx-target="#main-content" hx-swap="innerHTML">Blog</a></li>
+        <li style="margin-bottom: 10px;"><a hx-get="{% url 'reports' %}" hx-target="#main-content" hx-swap="innerHTML">Reports</a></li>
+        <li style="margin-bottom: 10px;"><a hx-get="{% url 'settings' %}" hx-target="#main-content" hx-swap="innerHTML">Settings</a></li>
+        
+        <!-- Staff-only section -->
+        {% if user.is_staff %}
+        <li style="margin-bottom: 10px; margin-top: 20px; border-top: 1px solid #eee; padding-top: 15px;">
+          <strong>Admin Tools</strong>
+        </li>
+        <li style="margin-bottom: 10px;">
+          <a hx-get="{% url 'create_blog' %}" hx-target="#main-content" hx-swap="innerHTML">Create Blog</a>
+        </li>
+        <li style="margin-bottom: 10px;">
+          <a href="/admin/" target="_blank">Django Admin</a>
+        </li>
+        {% endif %}
       </ul>
       
       <!-- Logout button at the bottom of sidebar -->
       <div style="margin-top: 30px; border-top: 1px solid #eee; padding-top: 15px;">
         <a href="/">Home</a>
         <br>
-        <a href="/logout/" style="color: #d9534f;">Logout</a>
+        <a href="{% url 'logout' %}" style="color: #d9534f;">Logout</a>
       </div>
     </nav>
 

@@ -1,0 +1,38 @@
+<h2>Blog</h2>
+<p>This is the blog overview section.</p>
+
+<div class="blog-actions">
+  {% if user.is_staff %}
+  <a hx-get="{% url 'create_blog' %}" hx-target="#main-content" hx-swap="innerHTML" class="btn-primary">Create New Blog Post</a>
+  {% endif %}
+</div>
+
+<div class="blog-list">
+  <h3>Recent Blog Posts</h3>
+  
+  {% if blog_posts %}
+    <ul>
+      {% for post in blog_posts %}
+        <li>
+          <h4>
+            <a hx-get="{% url 'blog_detail' post.id %}" hx-target="#main-content" hx-swap="innerHTML">
+              {{ post.title }}
+            </a>
+          </h4>
+          <p>{{ post.intro|truncatewords:30 }}</p>
+          <div class="post-meta">
+            <span>By {{ post.author.username }}</span>
+            <span>{{ post.created_at|date:"F j, Y" }}</span>
+            {% if post.published %}
+              <span class="status published">Published</span>
+            {% else %}
+              <span class="status draft">Draft</span>
+            {% endif %}
+          </div>
+        </li>
+      {% endfor %}
+    </ul>
+  {% else %}
+    <p>No blog posts available.</p>
+  {% endif %}
+</div>

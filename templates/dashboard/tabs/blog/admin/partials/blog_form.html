@@ -1,0 +1,59 @@
+<h2>Edit Blog Post</h2>
+
+<form method="post" action="{% url 'create_blog' %}" hx-post="{% url 'create_blog' %}" hx-target="#main-content" hx-swap="innerHTML">
+    {% csrf_token %}
+    
+    <input type="hidden" name="post_id" value="{{ post_id }}">
+    
+    {% if form.non_field_errors %}
+        <div class="error">
+            {% for error in form.non_field_errors %}
+                {{ error }}
+            {% endfor %}
+        </div>
+    {% endif %}
+    
+    <div class="form-group">
+        <label for="{{ form.title.id_for_label }}">Title</label>
+        {{ form.title }}
+        {% if form.title.errors %}
+            <div class="error">{{ form.title.errors }}</div>
+        {% endif %}
+    </div>
+    
+    <div class="form-group">
+        <label for="{{ form.intro.id_for_label }}">Introduction</label>
+        {{ form.intro }}
+        {% if form.intro.errors %}
+            <div class="error">{{ form.intro.errors }}</div>
+        {% endif %}
+    </div>
+    
+    <div class="form-group">
+        <label for="{{ form.mid.id_for_label }}">Main Content</label>
+        {{ form.mid }}
+        {% if form.mid.errors %}
+            <div class="error">{{ form.mid.errors }}</div>
+        {% endif %}
+    </div>
+    
+    <div class="form-group">
+        <label for="{{ form.conclusions.id_for_label }}">Conclusions</label>
+        {{ form.conclusions }}
+        {% if form.conclusions.errors %}
+            <div class="error">{{ form.conclusions.errors }}</div>
+        {% endif %}
+    </div>
+    
+    <div class="form-group checkbox">
+        <label>
+            {{ form.published }}
+            Publish immediately
+        </label>
+    </div>
+    
+    <div class="form-actions">
+        <button type="submit" class="btn-primary">Update Blog Post</button>
+        <a hx-get="{% url 'create_blog' %}" hx-target="#main-content" hx-swap="innerHTML" class="btn-secondary">Cancel Edit</a>
+    </div>
+</form> 

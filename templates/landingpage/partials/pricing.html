@@ -1,0 +1,52 @@
+<div class="pricing-section" style="padding: 40px 0; text-align: center;">
+  <h2>Choose Your Plan</h2>
+  <p>Select the plan that best fits your needs</p>
+  
+  <!-- Debug info -->
+  {% if debug %}
+  <div style="margin: 20px; padding: 10px; background-color: #f8f9fa; border: 1px solid #ddd; text-align: left;">
+    <h4>Debug Info:</h4>
+    <p>STRIPE_SECRET_KEY: {{ STRIPE_SECRET_KEY|default:"Not set" }}</p>
+    <p>STRIPE_PUBLISHABLE_KEY: {{ STRIPE_PUBLISHABLE_KEY|default:"Not set" }}</p>
+    <p>Number of prices: {{ prices|length }}</p>
+  </div>
+  {% endif %}
+  
+  <div class="pricing-tiers" style="display: flex; flex-wrap: wrap; justify-content: center; gap: 20px; margin-top: 30px;">
+    {% for price in prices %}
+      <div class="pricing-tier" style="flex: 0 0 300px; padding: 25px; border-radius: 8px; box-shadow: 0 0 15px rgba(0,0,0,0.1); text-align: left; background-color: white;">
+        <h3 style="margin-top: 0; color: #333;">{{ price.product.name }}</h3>
+        <div class="price" style="font-size: 24px; font-weight: bold; margin: 15px 0;">
+          ${{ price.unit_amount|divisibleby:100 }}
+          <span style="font-size: 16px; font-weight: normal; color: #666;">/ {{ price.recurring.interval }}</span>
+        </div>
+        
+        <div class="features" style="margin: 20px 0;">
+          {% if price.product.metadata.features %}
+            {% for feature in price.product.metadata.features.split %}
+              <div style="margin-bottom: 10px;">
+                <span style="color: #4CAF50; margin-right: 5px;">✓</span> {{ feature }}
+              </div>
+            {% endfor %}
+          {% else %}
+            <div style="margin-bottom: 10px;">
+              <span style="color: #4CAF50; margin-right: 5px;">✓</span> Basic features included
+            </div>
+          {% endif %}
+        </div>
+        
+        <form action="{% url 'create_checkout' %}" method="POST" style="margin-top: 20px;">
+          {% csrf_token %}
+          <input type="hidden" name="price_id" value="{{ price.id }}">
+          <button type="submit" style="width: 100%; padding: 12px; background-color: #4CAF50; color: white; border: none; border-radius: 4px; cursor: pointer; font-weight: bold;">
+            Subscribe Now
+          </button>
+        </form>
+      </div>
+    {% empty %}
+      <div style="text-align: center; padding: 20px;">
+        <p>No pricing plans available at the moment. Please check back later.</p>
+      </div>
+    {% endfor %}
+  </div>
+</div> 

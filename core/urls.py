@@ -20,15 +20,20 @@ from . import views
 
 urlpatterns = [
     path('admin/', admin.site.urls),
+    # Public URLs
     path('', include('landingpage.urls')),  # Landing page URLs
     path('', include('authentication.urls')),  # Authentication URLs
+    
+    # Dashboard URLs - all dashboard functionality goes under /dashboard/
     path('dashboard/', views.dashboard, name='dashboard'),
-    path('blog/', views.load_blog, name='blog'),
-    path('settings/', views.load_settings, name='settings'),
-    path('reports/', views.load_reports, name='reports'),
-    path('reports/monthly/', views.load_monthly_reports, name='monthly_reports'),
-    path('reports/annual/', views.load_annual_reports, name='annual_reports'),
-    path('reports/custom/', views.load_custom_reports, name='custom_reports'),
+    path('dashboard/settings/', views.load_settings, name='settings'),
+    path('dashboard/reports/', views.load_reports, name='reports'),
+    path('dashboard/reports/monthly/', views.load_monthly_reports, name='monthly_reports'),
+    path('dashboard/reports/annual/', views.load_annual_reports, name='annual_reports'),
+    path('dashboard/reports/custom/', views.load_custom_reports, name='custom_reports'),
+    
+    # Include blog URLs under dashboard
+    path('dashboard/', include('blog.urls')),
 ]
 
 
