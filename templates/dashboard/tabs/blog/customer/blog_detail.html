@@ -10,19 +10,39 @@
     </div>
   </div>
   
-  <div class="blog-content">
-    <div class="intro">
-      {{ post.intro|linebreaks }}
+  {% if can_view_content %}
+    <div class="blog-content">
+      <div class="intro">
+        {{ post.intro|linebreaks }}
+      </div>
+      
+      <div class="main-content">
+        {{ post.mid|linebreaks }}
+      </div>
+      
+      <div class="conclusions">
+        {{ post.conclusions|linebreaks }}
+      </div>
     </div>
-    
-    <div class="main-content">
-      {{ post.mid|linebreaks }}
+  {% else %}
+    <div class="subscription-required">
+      <div class="intro">
+        {{ post.intro|linebreaks }}
+      </div>
+      
+      <div class="upgrade-message">
+        <h3>Premium Content</h3>
+        <p>This content is available to users with the following subscription tiers:</p>
+        <ul>
+          {% for tier in allowed_tiers %}
+            <li>{{ tier|title }}</li>
+          {% endfor %}
+        </ul>
+        <p>Please upgrade your subscription to access this content.</p>
+        <a href="{% url 'home' %}" class="btn-primary">View Subscription Options</a>
+      </div>
     </div>
-    
-    <div class="conclusions">
-      {{ post.conclusions|linebreaks }}
-    </div>
-  </div>
+  {% endif %}
   
   <div class="blog-footer">
     <a hx-get="{% url 'blog' %}" hx-target="#main-content" hx-swap="innerHTML" class="back-link">← Back to Blog List</a>

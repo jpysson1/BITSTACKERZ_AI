@@ -45,15 +45,37 @@
         {% endif %}
     </div>
     
-    <div class="form-group checkbox">
-        <label>
+    <div class="form-group">
+        <label>Subscription Tiers That Can View This Post</label>
+        <div class="checkbox-group" style="display: flex; flex-direction: column; gap: 10px; margin-top: 10px;">
+            {% for choice in form.allowed_subscription_tiers %}
+                <div class="checkbox-item" style="display: flex; align-items: center;">
+                    {{ choice.tag }}
+                    <label for="{{ choice.id_for_label }}" style="margin-left: 8px; font-weight: normal;">
+                        {{ choice.choice_label }}
+                    </label>
+                </div>
+            {% endfor %}
+        </div>
+        <small class="form-text text-muted" style="margin-top: 8px; display: block;">If none selected, all users can view this post.</small>
+        {% if form.allowed_subscription_tiers.errors %}
+            <div class="error">{{ form.allowed_subscription_tiers.errors }}</div>
+        {% endif %}
+    </div>
+    
+    <div class="form-group checkbox" style="margin-top: 20px;">
+        <label style="display: flex; align-items: center;">
             {{ form.published }}
-            Publish immediately
+            <span style="margin-left: 8px;">Publish immediately</span>
         </label>
     </div>
     
-    <div class="form-actions">
-        <button type="submit" class="btn-primary">Update Blog Post</button>
-        <a hx-get="{% url 'create_blog' %}" hx-target="#main-content" hx-swap="innerHTML" class="btn-secondary">Cancel Edit</a>
+    <div class="form-actions" style="margin-top: 30px; display: flex; gap: 10px;">
+        <button type="submit" class="btn-primary" style="padding: 10px 20px; background-color: #4CAF50; color: white; border: none; border-radius: 4px; cursor: pointer; font-weight: bold;">
+            {% if editing %}Update{% else %}Create{% endif %} Blog Post
+        </button>
+        <a hx-get="{% url 'blog' %}" hx-target="#main-content" hx-swap="innerHTML" class="btn-secondary" style="padding: 10px 20px; background-color: #6c757d; color: white; border: none; border-radius: 4px; cursor: pointer; text-decoration: none; display: inline-block; text-align: center;">
+            Cancel
+        </a>
     </div>
 </form> 

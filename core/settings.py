@@ -21,8 +21,7 @@ BASE_DIR = Path(__file__).resolve().parent.parent
 # See https://docs.djangoproject.com/en/5.2/howto/deployment/checklist/
 
 # SECURITY WARNING: keep the secret key used in production secret!
-SECRET_KEY = 'django-insecure-4@j5ge@cj@+ddlh(**ha()s#^1!64$vfz1m--y*27@720zx=!f'
-
+SECRET_KEY = os.environ.get('DJANGO_SECRET_KEY')
 # SECURITY WARNING: don't run with debug turned on in production!
 DEBUG = True
 
@@ -132,5 +131,31 @@ AUTH_USER_MODEL = 'authentication.CustomUser'
 LOGIN_URL = 'login'
 
 # Stripe settings
+# Try different methods to load the environment variables
 STRIPE_SECRET_KEY = os.environ.get('STRIPE_SECRET_KEY')
 STRIPE_PUBLISHABLE_KEY = os.environ.get('STRIPE_PUBLISHABLE_KEY')
+STRIPE_WEBHOOK_SECRET = os.environ.get('STRIPE_WEBHOOK_SECRET')
+
+# Print debug information
+print(f"STRIPE_SECRET_KEY: {'Set' if STRIPE_SECRET_KEY else 'Not set'}")
+print(f"STRIPE_PUBLISHABLE_KEY: {'Set' if STRIPE_PUBLISHABLE_KEY else 'Not set'}")
+
+# If keys are not set, try to load from .env file directly
+if not STRIPE_SECRET_KEY or not STRIPE_PUBLISHABLE_KEY:
+    try:
+        from dotenv import load_dotenv
+        load_dotenv()
+        STRIPE_SECRET_KEY = os.environ.get('STRIPE_SECRET_KEY')
+        STRIPE_PUBLISHABLE_KEY = os.environ.get('STRIPE_PUBLISHABLE_KEY')
+        print("Tried loading from .env file")
+        print(f"STRIPE_SECRET_KEY after .env: {'Set' if STRIPE_SECRET_KEY else 'Not set'}")
+        print(f"STRIPE_PUBLISHABLE_KEY after .env: {'Set' if STRIPE_PUBLISHABLE_KEY else 'Not set'}")
+    except ImportError:
+        print("python-dotenv not installed, skipping .env loading")
+
+# If still not set, hardcode for development (NOT RECOMMENDED FOR PRODUCTION)
+if DEBUG and (not STRIPE_SECRET_KEY or not STRIPE_PUBLISHABLE_KEY):
+    print("WARNING: Using hardcoded Stripe keys for development")
+    # Replace these with your actual test keys if needed for development
+    STRIPE_SECRET_KEY = 'sk_test_...'  # Your test secret key
+    STRIPE_PUBLISHABLE_KEY = 'pk_test_...'  # Your test publishable key

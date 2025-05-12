@@ -47,8 +47,6 @@ def pricing_view(request):
 
 ✅ STEP 4: Checkout View in Django
 
-
-
 @require_POST
 @login_required
 def create_checkout(request):
@@ -79,3 +77,73 @@ Or use a related profile model if you prefer to separate concerns.
   - Syncs Stripe customer/subscription
   - Stores tier in user profile
   - Controls access based on tier
+
+✅ STEP 5: Stripe Webhook for Subscription Sync
+Stripe will send webhooks like:
+
+checkout.session.completed
+
+customer.subscription.updated
+
+customer.subscription.deleted
+
+Webhook Handler (recommended serverless or Django view):
+
+@csrf_exempt
+def stripe_webhook(request):
+    payload = request.body
+    sig_header = request.META["HTTP_STRIPE_SIGNATURE"]
+    event = stripe.Webhook.construct_event(payload, sig_header, STRIPE_WEBHOOK_SECRET)
+
+    if event["type"] == "customer.subscription.updated":
+        subscription = event["data"]["object"]
+        customer_id = subscription["customer"]
+        tier = map_price_to_tier(subscription["items"]["data"][0]["price"]["id"])
+
+        user = User.objects.filter(stripe_customer_id=customer_id).first()
+        if user:
+            user.subscription_tier = tier
+            user.save()
+
+    return HttpResponse(status=200)
+
+
+def map_price_to_tier(price_id):
+    if price_id == "price_123": return "free"
+    if price_id == "price_456": return "pro"
+    if price_id == "price_789": return "premium"
+    return "free"
+
+# blog/views.py
+@login_required
+def view_post(request, slug):
+    post = get_object_or_404(BlogPost, slug=slug)
+
+    if post.tier == "free":
+        return render(request, "blog/post.html", {"post": post})
+
+    elif post.tier == "pro" and request.user.subscription_tier in ["pro", "premium"]:
+        return render(request, "blog/post.html", {"post": post})
+
+    elif post.tier == "premium" and request.user.subscription_tier == "premium":
+        return render(request, "blog/post.html", {"post": post})
+
+    else:
+        return render(request, "blog/locked.html", {"required_tier": post.tier})
+class BlogPost(models.Model):
+    title = models.CharField(max_length=200)
+    slug = models.SlugField()
+    content = models.TextField()
+    tier = models.CharField(max_length=20, choices=[
+        ("free", "Free"),
+        ("pro", "Pro"),
+        ("premium", "Premium"),
+    ])
+
+
+✅ STEP 7: Optional Additions
+Feature	Recommendation
+User can cancel/manage plan	Link to Stripe Billing Portal
+Subscription change hooks	Handled via webhook updates
+Emails after sign-up	Use Resend (from webhook or checkout success)
+Serverless usage	Webhook → serverless (e.g., Supabase Edge Function)

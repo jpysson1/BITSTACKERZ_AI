@@ -54,7 +54,7 @@ def create_blog(request):
                     messages.success(request, "Blog post created successfully!")
                 
                 # Reset form for new entries
-                form = BlogPostForm()
+                #form = BlogPostForm()
                 # Refresh the list
                 blog_posts = BlogPost.objects.all().order_by('-created_at')
                 
@@ -108,7 +108,7 @@ def get_blog_post(request, post_id):
 def blog_detail(request, post_id):
     """View for displaying a single blog post"""
     # Get the blog post
-    post = get_object_or_404(BlogPost, id=post_id)
+    post = get_object_or_404(BlogPost, id=post_id, published=True)
     
     # If the post is not published, only staff can view it
     if not post.published and not request.user.is_staff:
@@ -116,7 +116,9 @@ def blog_detail(request, post_id):
         return redirect('blog')
     
     context = {
-        'post': post
+        'post': post,
+        'can_view_content': post.user_can_view_content(request.user),
+        'allowed_tiers': post.get_allowed_tiers()
     }
     
     # Check if this is an HTMX request

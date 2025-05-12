@@ -60,6 +60,25 @@
                 {% endif %}
             </div>
             
+            <!-- Add subscription tier selection -->
+            <div class="form-group">
+                <label>Subscription Tiers That Can View This Post</label>
+                <div class="checkbox-group" style="display: flex; flex-direction: column; gap: 10px; margin-top: 10px;">
+                    {% for choice in form.allowed_subscription_tiers %}
+                        <div class="checkbox-item" style="display: flex; align-items: center;">
+                            {{ choice.tag }}
+                            <label for="{{ choice.id_for_label }}" style="margin-left: 8px; font-weight: normal;">
+                                {{ choice.choice_label }}
+                            </label>
+                        </div>
+                    {% endfor %}
+                </div>
+                <small class="form-text text-muted" style="margin-top: 8px; display: block;">If none selected, all users can view this post.</small>
+                {% if form.allowed_subscription_tiers.errors %}
+                    <div class="error">{{ form.allowed_subscription_tiers.errors }}</div>
+                {% endif %}
+            </div>
+            
             <div class="form-group checkbox">
                 <label>
                     {{ form.published }}

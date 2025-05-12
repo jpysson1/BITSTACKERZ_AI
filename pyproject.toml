@@ -10,6 +10,7 @@ python = "^3.12"
 django = "^5.2.1"
 commitizen = "^4.7.0"
 stripe = "^12.1.0"
+python-dotenv = "^1.1.0"
 
 
 [build-system]
